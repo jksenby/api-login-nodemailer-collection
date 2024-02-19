@@ -1,0 +1,197 @@
+<div class="wrapper">
+  <div>
+    <form>
+      <div class="row" style="text-align: center">
+        <div class="form-group col-md-6">
+          <mat-chip-listbox>
+            <mat-chip-option (click)="select(1)" color="accent"
+              >Ready</mat-chip-option
+            >
+            <mat-chip-option (click)="select(2)" color="warn"
+              >In progress</mat-chip-option
+            >
+          </mat-chip-listbox>
+        </div>
+        <div class="form-group col-md-6">
+          <div class="mb-3">
+            <mat-form-field>
+              <mat-label>Priority</mat-label>
+              <mat-select
+                (selectionChange)="getTasks()"
+                [(ngModel)]="priorityTask"
+              >
+                <mat-option [value]="0">All</mat-option>
+                <mat-option [value]="1"> Low </mat-option>
+                <mat-option [value]="2"> Medium </mat-option>
+                <mat-option [value]="3"> High </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+    </form>
+
+    <br />
+
+    <div class="mat-elevation-z8" *ngIf="task != null">
+      <table mat-table [dataSource]="dataSource">
+        <!-- Name Column -->
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef>Name</th>
+          <td mat-cell *matCellDef="let element">{{ element["name"] }}</td>
+        </ng-container>
+
+        <!-- Description Column -->
+        <ng-container matColumnDef="description">
+          <th mat-header-cell *matHeaderCellDef>Description</th>
+          <td mat-cell *matCellDef="let element">
+            {{ element["description"] }}
+          </td>
+        </ng-container>
+
+        <!-- Priority Column -->
+        <ng-container matColumnDef="priority">
+          <th mat-header-cell *matHeaderCellDef>Priority</th>
+          <td mat-cell *matCellDef="let element">
+            {{ priority[element["priority"]] }}
+          </td>
+        </ng-container>
+
+        <!-- Created Column -->
+        <ng-container matColumnDef="created">
+          <th mat-header-cell *matHeaderCellDef>Created</th>
+          <td mat-cell *matCellDef="let element">
+            {{ format(element["created"]) }}
+          </td>
+        </ng-container>
+
+        <!-- Readiness Column -->
+        <ng-container matColumnDef="readiness">
+          <th mat-header-cell *matHeaderCellDef>Readiness</th>
+          <td mat-cell *matCellDef="let element">
+            <button
+              (click)="toggleReadiness(element['_id'], element['readiness'])"
+              mat-button
+              style="background-color: transparent; border: none"
+            >
+              <i
+                class="fa-solid fa-check fa-xl"
+                style="color: green"
+                *ngIf="element['readiness']; else hourglass"
+              ></i>
+              <ng-template #hourglass>
+                <i class="fa-solid fa-hourglass fa-xl" style="color: red"></i>
+              </ng-template>
+            </button>
+          </td>
+        </ng-container>
+
+        <!-- Created Column -->
+        <ng-container matColumnDef="created">
+          <th mat-header-cell *matHeaderCellDef>Created</th>
+          <td mat-cell *matCellDef="let element">
+            {{ format(element["created"]) }}
+          </td>
+        </ng-container>
+
+        <!-- Delete Column -->
+        <ng-container matColumnDef="delete">
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let element">
+            <button
+              (click)="deleteTask(element['_id'])"
+              style="border: none; background-color: #fff"
+            >
+              <i
+                [id]="'trash' + element['_id']"
+                class="fa-solid fa-trash fa-xl"
+                style="color: #ff0000"
+              ></i>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+      <mat-paginator
+        #paginator
+        [length]="totalDataLength"
+        [pageSizeOptions]="pageSize"
+        showFirstLastButtons
+      ></mat-paginator>
+    </div>
+    <button
+      style="float: right; margin: 30px"
+      mat-raised-button
+      color="primary"
+      (click)="downloadResult()"
+    >
+      <a
+        style="color: #fff; text-decoration: none"
+        download="Results.txt"
+        [href]="fileUrl"
+        >Get the results</a
+      >
+    </button>
+  </div>
+  <div class="taskPost">
+    <h4 class="mb-3 text-muted">Create a Task</h4>
+    <form (ngSubmit)="createTask()" [formGroup]="createFormGroup">
+      <div class="mb-3">
+        <mat-form-field class="example-full-width">
+          <mat-label>Task name</mat-label>
+          <input
+            formControlName="nameFormControl"
+            matInput
+            placeholder="Do 10 push-ups"
+            [(ngModel)]="taskName"
+          />
+          <mat-error
+            *ngIf="createFormGroup.controls['nameFormControl'].invalid"
+          >
+            The name is required field
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="mb-3">
+        <mat-form-field>
+          <mat-label>Priority</mat-label>
+          <mat-select
+            formControlName="priorityFormControl"
+            [(ngModel)]="taskPriority"
+            name="priority"
+          >
+            <mat-option [value]="1"> Low </mat-option>
+            <mat-option [value]="2"> Medium </mat-option>
+            <mat-option [value]="3"> High </mat-option>
+          </mat-select>
+          <mat-error
+            *ngIf="createFormGroup.controls['priorityFormControl'].invalid"
+          >
+            The priority is required
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="mb-3">
+        <mat-form-field class="example-full-width">
+          <mat-label>Description</mat-label>
+          <textarea
+            matInput
+            placeholder="I need to do that it at..."
+            rows="3"
+            formControlName="descriptionFormControl   "
+            [(ngModel)]="taskDescription"
+          ></textarea>
+        </mat-form-field>
+      </div>
+      <button mat-raised-button color="accent">Create</button>
+      <mat-error
+        *ngIf="serverMessage.message"
+        [style.color]="serverMessage.class"
+      >
+        {{ serverMessage.message }}
+      </mat-error>
+    </form>
+  </div>
+</div>
