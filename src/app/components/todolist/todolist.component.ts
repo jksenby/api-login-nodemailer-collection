@@ -10,11 +10,11 @@ import { MatPaginator } from "@angular/material/paginator";
 import { DomSanitizer } from "@angular/platform-browser";
 
 @Component({
-  selector: "app-home",
-  templateUrl: "./home.component.html",
-  styleUrl: "./home.component.scss",
+  selector: "app-todolist",
+  templateUrl: "./todolist.component.html",
+  styleUrl: "./todolist.component.scss",
 })
-export class HomeComponent implements OnInit, AfterViewInit {
+export class TodolistComponent implements OnInit, AfterViewInit {
   createFormGroup: FormGroup;
 
   displayedColumns: string[] = [

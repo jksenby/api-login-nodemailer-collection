@@ -1,0 +1,86 @@
+<div
+  class="container-fluid"
+  [style]="{
+    backgroundImage: getAllPhotos(),
+    backgroundRepeat: 'no-repeat',
+    backgroundPosition: 'top, center, bottom'
+  }"
+>
+  <div class="container text-center">
+    <div class="row">
+      <div class="col-lg-1" style="width: 100%">
+        <form
+          style="background-color: white"
+          (submit)="onSubmitCityName($event)"
+        >
+          <legend>Choose city</legend>
+          <input
+            style="text-align: center"
+            type="text"
+            placeholder="Enter the city name..."
+            class="form-control"
+            [(ngModel)]="cityName"
+          />
+          <button style="margin: 10px 0" class="btn btn-primary">Submit</button>
+          <div *ngIf="cityWeatherData" style="width: 100%; text-align: center">
+            <h1>{{ cityWeatherData.city.name }}</h1>
+          </div>
+        </form>
+        <ul
+          *ngIf="searchResult; else notFound"
+          style="display: -ms-grid"
+          class="container-fluid list"
+        >
+          <li *ngFor="let item of cityWeatherData.list" style="margin: 20px">
+            <div class="card" style="width: 18rem; display: inline-block">
+              <h2>{{ getDay(item.dt_txt) }}</h2>
+              <img
+                class="card-img-top"
+                [src]="
+                  'https://openweathermap.org/img/wn/' +
+                  item.weather[0].icon +
+                  '@2x.png'
+                "
+                alt="weather icon"
+              />
+              <div class="card-body">
+                <h5 class="card-title">
+                  {{
+                    item.weather[0].description[0].toUpperCase() +
+                      item.weather[0].description.slice(1)
+                  }}
+                </h5>
+                <h1>{{ (+item.main.temp - 273.15).toFixed(1) }}°C</h1>
+              </div>
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                  {{ item.dt_txt.slice(8, 10) }}
+                  <!-- Days -->
+                  {{ monthNames[+item.dt_txt.slice(5, 7)] }}
+                  <!-- Month -->
+                  {{ item.dt_txt.slice(11, 16) }}
+                  <!-- Time -->
+                </li>
+
+                <li class="list-group-item">
+                  Feels like:
+                  {{ (+item.main.feels_like - 273.15).toFixed(1) }}°C
+                </li>
+              </ul>
+              <div class="card-body">
+                <p href="#" class="card-link">
+                  Humidity: {{ +item.main.humidity }}%
+                </p>
+              </div>
+            </div>
+          </li>
+        </ul>
+        <ng-template #notFound>
+          <h1 style="background-color: white">
+            Unfortunately, we didn't find this place
+          </h1>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</div>

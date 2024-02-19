@@ -1,7 +1,7 @@
 {
   "version": 1,
   "projects": {
-    "todolist": {
+    "superapp": {
       "projectType": "application",
       "root": "",
       "sourceRoot": "src",
@@ -9,15 +9,15 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/todolist",
-            "index": "src/app/index.html",
-            "main": "src/app/main.ts",
+            "outputPath": "dist/superapp",
+            "index": "src/index.html",
+            "main": "src/main.ts",
             "polyfills": ["zone.js"],
             "tsConfig": "tsconfig.json",
             "aot": true,
             "styles": [
               "@angular/material/prebuilt-themes/indigo-pink.css",
-              "src/app/styles.scss"
+              "src/styles.scss"
             ]
           },
           "configurations": {
@@ -38,7 +38,7 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "buildTarget": "todolist:build"
+            "buildTarget": "superapp:build"
           }
         }
       }

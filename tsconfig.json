@@ -17,6 +17,6 @@
         "dom"
       ]
     },
-      "files": [ "src/app/main.ts" ],
+      "files": [ "src/main.ts" ],
       "include": [ "src/**/*.d.ts"]
   }

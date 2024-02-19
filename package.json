@@ -1,5 +1,5 @@
 {
-  "name": "todolist",
+  "name": "superapp",
   "version": "1.0.0",
   "description": "Angular project for discipline Web-Technologies (Back-end)",
   "author": "Karsenbay Zhalgas",
@@ -26,6 +26,7 @@
     "node": "^21.6.1",
     "nodemon": "^3.0.3",
     "rxjs": "~7.8.0",
+    "angular8-yandex-maps": "^17.1.0",
     "zone.js": "~0.14.2"
   },
   "devDependencies": {

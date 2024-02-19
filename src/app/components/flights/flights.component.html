@@ -1,0 +1,165 @@
+<div class="container text-center">
+  <div class="row">
+    <div class="col-lg-1" style="width: 100%">
+      <form
+        style="
+          height: 80vh;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        "
+      >
+        <div>
+          <mat-form-field>
+            <mat-label>From</mat-label>
+            <input
+              matInput
+              type="text"
+              [(ngModel)]="from"
+              placeholder="Astana"
+            />
+            @if (!from || from.length === 0) {
+            <mat-error>It is required value</mat-error>
+            }
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>To</mat-label>
+            <input matInput type="text" [(ngModel)]="to" placeholder="Tokyo" />
+            @if (!to || to.length === 0) {
+            <mat-error>It is required value</mat-error>
+            }
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Departure Date</mat-label>
+            <input
+              matInput
+              [matDatepicker]="picker"
+              [(ngModel)]="departureDate"
+            />
+            <mat-hint>MM/DD/YYYY</mat-hint>
+            <mat-datepicker-toggle
+              matIconSuffix
+              [for]="picker"
+            ></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+
+          <div style="width: 100%">
+            <mat-form-field appearance="fill">
+              <mat-label>Currency</mat-label>
+              <mat-select [(value)]="selectedCurrency" disableOptionCentering>
+                <mat-option
+                  *ngFor="let item of currensies"
+                  [value]="item.value"
+                >
+                  {{ item.viewValue }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <input
+            type="number"
+            placeholder="Number of adults"
+            required
+            [(ngModel)]="adults"
+          />
+          <input
+            type="number"
+            placeholder="Number of children"
+            required
+            [(ngModel)]="childs"
+          />
+          <input
+            type="number"
+            placeholder="Number of infants"
+            required
+            [(ngModel)]="infants"
+          />
+          <div style="width: 100%; margin: 10px 0">
+            <button class="btn btn-primary" (click)="onSubmit()">
+              Find tickets
+            </button>
+          </div>
+
+          <i
+            style="background-color: white"
+            class="fa-solid fa-spinner fa-spin-pulse fa-2xl"
+            *ngIf="loading"
+          ></i>
+        </div>
+      </form>
+      <mat-divider *ngIf="loading"></mat-divider>
+      <div *ngIf="flightData" class="list" style="display: block">
+        <mat-card
+          style="
+            max-width: 400px;
+            display: inline-block;
+            margin-right: 0;
+            border-bottom: 1px solid;
+          "
+          *ngFor="let item of flightData.itineraries; let i = index"
+        >
+          <mat-card-header>
+            <mat-card-title>{{
+              item.cheapest_price
+                ? formatPrice(item.cheapest_price.amount)
+                : formatPrice(item.pricing_options[0].price.amount)
+            }}</mat-card-title>
+            <mat-card-subtitle
+              >Stop count:
+              {{ flightData.legs[i].stop_count }}</mat-card-subtitle
+            >
+          </mat-card-header>
+          <mat-card-content>
+            <button class="btn btn-primary" style="margin-bottom: 10px">
+              Select this ticket
+            </button>
+            <p>
+              {{ departure }}
+              <i class="fa-solid fa-plane-departure"></i>
+              {{
+                formatTimeDuration(
+                  formatDate(flightData.legs[i].departure).year,
+                  formatDate(flightData.legs[i].departure).monthIndex,
+                  formatDate(flightData.legs[i].departure).day,
+                  +formatDate(flightData.legs[i].departure).time.slice(0, 2),
+                  +formatDate(flightData.legs[i].departure).time.slice(3, 5),
+                  +formatDate(flightData.legs[i].departure).time.slice(6, 8),
+                  formatDate(flightData.legs[i].arrival).year,
+                  formatDate(flightData.legs[i].arrival).monthIndex,
+                  formatDate(flightData.legs[i].arrival).day,
+                  +formatDate(flightData.legs[i].arrival).time.slice(0, 2),
+                  +formatDate(flightData.legs[i].arrival).time.slice(3, 5),
+                  +formatDate(flightData.legs[i].arrival).time.slice(6, 8)
+                )
+              }}
+              <i class="fa-solid fa-plane-arrival"></i>
+              {{ arrival }}
+            </p>
+          </mat-card-content>
+          <mat-card-actions>
+            <button mat-button>
+              {{
+                formatDate(flightData.legs[i].departure).day +
+                  " " +
+                  formatDate(flightData.legs[i].departure).month
+              }}
+
+              {{ formatDate(flightData.legs[i].departure).time }}
+            </button>
+            -->
+            <button mat-button>
+              {{
+                formatDate(flightData.legs[i].arrival).day +
+                  " " +
+                  formatDate(flightData.legs[i].arrival).month
+              }}
+              {{ formatDate(flightData.legs[i].arrival).time }}
+            </button>
+          </mat-card-actions>
+        </mat-card>
+      </div>
+    </div>
+  </div>
+</div>
