@@ -5,6 +5,7 @@ import { WeatherComponent } from "./components/weather/weather.component";
 import { FlightsComponent } from "./components/flights/flights.component";
 import { LoginComponent } from "./components/login/login.component";
 import { RegistrationComponent } from "./components/registration/registration.component";
+import { ProfileComponent } from "./components/profile/profile.component";
 
 export const appRoutes: Routes = [
   { path: "todolist", component: TodolistComponent },
@@ -18,5 +19,6 @@ export const appRoutes: Routes = [
       { path: "login", component: LoginComponent },
     ],
   },
+  { path: "profile/:username", component: ProfileComponent },
   { path: "**", component: FlightsComponent },
 ];

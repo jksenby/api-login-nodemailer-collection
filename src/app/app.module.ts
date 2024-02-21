@@ -28,12 +28,15 @@ import { FooterComponent } from "src/app/components/footer/footer.component";
 import { WeatherComponent } from "src/app/components/weather/weather.component";
 import { MapComponent } from "src/app/components/map/map.component";
 import { FlightsComponent } from "src/app/components/flights/flights.component";
-import { LoginComponent } from "./components/login/login.component";
-import { RegistrationComponent } from "./components/registration/registration.component";
+import { LoginComponent } from "src/app/components/login/login.component";
+import { RegistrationComponent } from "src/app/components/registration/registration.component";
+import { ProfileComponent } from "src/app/components/profile/profile.component";
+import { EditDialogComponent } from "src/app/components/edit-dialog/edit-dialog.component";
 
 import { TaskService } from "src/app/services/task.service";
 import { CityWeatherService } from "src/app/services/city.service";
 import { FlightService } from "src/app/services/flight.service";
+import { UserService } from "src/app/services/user.service";
 import { provideNativeDateAdapter } from "@angular/material/core";
 
 const mapConfig: YaConfig = {
@@ -75,12 +78,15 @@ const mapConfig: YaConfig = {
     FlightsComponent,
     LoginComponent,
     RegistrationComponent,
+    ProfileComponent,
+    EditDialogComponent,
   ],
   bootstrap: [AppComponent],
   providers: [
     TaskService,
     CityWeatherService,
     FlightService,
+    UserService,
     provideNativeDateAdapter(),
   ],
 })

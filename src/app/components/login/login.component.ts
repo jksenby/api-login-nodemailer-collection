@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { Router, ActivatedRoute } from "@angular/router";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { UserService } from "src/app/services/user.service";
 
 @Component({
   templateUrl: "login.component.html",
@@ -13,8 +14,8 @@ export class LoginComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
-    private route: ActivatedRoute,
-    private router: Router
+    private userService: UserService,
+    private _route: Router
   ) {}
 
   ngOnInit() {
@@ -26,5 +27,17 @@ export class LoginComponent implements OnInit {
 
   get f() {
     return this.form.controls;
+  }
+
+  onSubmit() {
+    this.userService
+      .putTempUser(this.f.username.value, this.f.password.value)
+      .subscribe({
+        next: (res) => {
+          alert(res.message);
+          this._route.navigate(["/"]).then(() => window.location.reload());
+        },
+        error: (err) => alert(err.error.message),
+      });
   }
 }

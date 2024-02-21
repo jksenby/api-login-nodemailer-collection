@@ -1,0 +1,109 @@
+<div class="container emp-profile" *ngIf="user; else loading">
+  <form method="post">
+    <div class="row">
+      <div class="col-md-4">
+        <div class="profile-img">
+          <img [src]="user.pfp" alt="pfp" />
+          <div class="file btn btn-lg btn-primary">
+            Change Photo
+            <input type="file" name="file" />
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="profile-head">
+          <h5>{{ user.firstName }} {{ user.lastName }}</h5>
+          <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item">
+              <a
+                class="nav-link active"
+                id="home-tab"
+                data-toggle="tab"
+                role="tab"
+                aria-controls="home"
+                aria-selected="true"
+                >About</a
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-md-2">
+        <button mat-button (click)="openDialog()" class="profile-edit-btn">
+          Edit Profile
+        </button>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4">
+        <!-- <div class="profile-work">
+          <p>WORK LINK</p>
+          <a href="">Website Link</a><br />
+          <a href="">Bootsnipp Profile</a><br />
+          <a href="">Bootply Profile</a>
+          <p>SKILLS</p>
+          <a href="">Web Designer</a><br />
+          <a href="">Web Developer</a><br />
+          <a href="">WordPress</a><br />
+          <a href="">WooCommerce</a><br />
+          <a href="">PHP, .Net</a><br />
+        </div> -->
+      </div>
+      <div class="col-md-8">
+        <div class="tab-content profile-tab" id="myTabContent">
+          <div
+            class="tab-pane fade show active"
+            id="home"
+            role="tabpanel"
+            aria-labelledby="home-tab"
+          >
+            <div class="row">
+              <div class="col-md-6">
+                <label>Username</label>
+              </div>
+              <div class="col-md-6">
+                <p>{{ user.username }}</p>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <label>Full Name</label>
+              </div>
+              <div class="col-md-6">
+                <p>{{ user.firstName + " " + user.lastName }}</p>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <label>Email</label>
+              </div>
+              <div class="col-md-6">
+                <p>{{ user.email }}</p>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <label>Phone</label>
+              </div>
+              <div class="col-md-6">
+                <p>123 456 7890</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+<ng-template
+  #loading
+  style="
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  "
+>
+  <i class="fa-solid fa-spinner fa-spin-pulse fa-2xl"></i>
+</ng-template>

@@ -22,7 +22,7 @@
         <a routerLink="/map" class="nav-link px-2 link-secondary">Map</a>
       </li>
       <li>
-        <a routerLink="/weather" class="nav-link px-2 link-secondary"
+        <a routerLink="/weather " class="nav-link px-2 link-secondary"
           >Weather</a
         >
       </li>
@@ -33,11 +33,11 @@
       </li>
       <li>
         <button
-          routerLink="/authorization/login"
+          [routerLink]="signed.route"
           matTooltip="Sign in"
           mat-icon-button
         >
-          <mat-icon>login</mat-icon>
+          <mat-icon>{{ signed.icon }}</mat-icon>
         </button>
       </li>
     </ul>
