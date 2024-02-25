@@ -1,5 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { text } from "body-parser";
+import { EmailService } from "src/app/services/email.service";
 import { UserService } from "src/app/services/user.service";
 
 @Component({
@@ -14,7 +16,8 @@ export class RegistrationComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
-    private userService: UserService
+    private userService: UserService,
+    private emailService: EmailService
   ) {}
 
   ngOnInit() {
@@ -24,6 +27,7 @@ export class RegistrationComponent implements OnInit {
       email: ["", Validators.required],
       username: ["", Validators.required],
       password: ["", [Validators.required, Validators.minLength(6)]],
+      isAdmin: [false, Validators.required],
     });
   }
 
@@ -47,6 +51,7 @@ export class RegistrationComponent implements OnInit {
           username: this.f.username.value,
           password: this.f.password.value,
           pfp: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Unknown_person.jpg/1084px-Unknown_person.jpg",
+          isAdmin: this.f.isAdmin.value,
         })
         .subscribe((res) => {
           if (res.message) {
@@ -54,7 +59,22 @@ export class RegistrationComponent implements OnInit {
           } else {
             if (res.check) {
               alert(res.check);
-            } else alert("You succussfully signed up");
+            } else {
+              this.emailService
+                .sendEmail({
+                  user: "zhalgas.karsenbai@gmail.com",
+                  pass: "hbqd buof bqjo owft",
+                  to: this.f.email.value,
+                  subject:
+                    "Congratulations! You have registered to our web site",
+                  text: "Yeah my boy",
+                  filename: null,
+                  content: null,
+                  service: ".gmail.com",
+                })
+                .subscribe();
+              alert("You succussfully signed up");
+            }
           }
         });
     } else {

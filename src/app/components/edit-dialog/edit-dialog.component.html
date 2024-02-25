@@ -1,0 +1,33 @@
+<h2 mat-dialog-title>Edit profile</h2>
+<mat-dialog-content class="mat-typography">
+  <form [formGroup]="editForm" (ngSubmit)="onSubmit()">
+    <mat-form-field style="width: 100%">
+      <mat-label>First Name</mat-label>
+      <input matInput formControlName="firstName" />
+    </mat-form-field>
+    <mat-form-field style="width: 100%">
+      <mat-label>Last Name</mat-label>
+      <input matInput formControlName="lastName" />
+    </mat-form-field>
+    <mat-form-field style="width: 100%">
+      <mat-label>Age</mat-label>
+      <input type="number" matInput formControlName="age" />
+    </mat-form-field>
+    <mat-radio-group formControlName="gender" aria-label="Select an option">
+      <mat-radio-button value="Male">Male</mat-radio-button>
+      <mat-radio-button value="Female">Female</mat-radio-button>
+    </mat-radio-group>
+    <mat-form-field style="width: 100%">
+      <mat-label>Country</mat-label>
+      <input matInput formControlName="country" />
+    </mat-form-field>
+    <mat-form-field style="width: 100%">
+      <mat-label>Phone</mat-label>
+      <input matInput formControlName="phone" />
+    </mat-form-field>
+    <mat-dialog-actions align="end">
+      <button mat-button mat-dialog-close>Cancel</button>
+      <button mat-button type="submit" cdkFocusInitial>Edit</button>
+    </mat-dialog-actions>
+  </form>
+</mat-dialog-content>

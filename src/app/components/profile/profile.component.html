@@ -28,9 +28,12 @@
           </ul>
         </div>
       </div>
-      <div class="col-md-2">
+      <div class="col-md-2" *ngIf="user.isAdmin">
         <button mat-button (click)="openDialog()" class="profile-edit-btn">
           Edit Profile
+        </button>
+        <button mat-button (click)="logout()">
+          <mat-icon style="color: red">logout</mat-icon>
         </button>
       </div>
     </div>
@@ -83,10 +86,26 @@
             </div>
             <div class="row">
               <div class="col-md-6">
+                <label>Gender</label>
+              </div>
+              <div class="col-md-6">
+                <p>{{ user?.gender }}</p>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <label>Country</label>
+              </div>
+              <div class="col-md-6">
+                <p>{{ user?.country }}</p>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
                 <label>Phone</label>
               </div>
               <div class="col-md-6">
-                <p>123 456 7890</p>
+                <p>{{ user?.phone }}</p>
               </div>
             </div>
           </div>

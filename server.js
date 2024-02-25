@@ -2,7 +2,9 @@ const mongoose = require("mongoose");
 const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
+const nodemailer = require("nodemailer");
 const cors = require("cors");
+const bcrypt = require("bcrypt");
 const port = 3000;
 
 app.use(cors());
@@ -16,6 +18,7 @@ const taskSchema = mongoose.Schema({
   readiness: Boolean,
   created: Date,
   priority: Number,
+  userId: mongoose.Schema.Types.ObjectId,
 });
 
 const userSchema = mongoose.Schema({
@@ -25,25 +28,38 @@ const userSchema = mongoose.Schema({
   username: String,
   password: String,
   age: Number,
-  Country: String,
-  Gender: String,
+  country: String,
+  gender: String,
   pfp: String,
+  phone: String,
+  isAdmin: Boolean,
 });
 
 const tempUserSchema = mongoose.Schema({
   username: String,
   loggedIn: Boolean,
+  isAdmin: Boolean,
+  userId: mongoose.Schema.Types.ObjectId,
+});
+
+const mainPageSchema = mongoose.Schema({
+  image: String,
+  name: String,
+  nameOnRussian: String,
+  description: String,
+  descriptionOnRussian: String,
+  created: Date,
 });
 
 const Task = new mongoose.model("tasks", taskSchema, "tasks");
 const User = new mongoose.model("users", userSchema, "users");
 const tempUser = new mongoose.model("tempUser", tempUserSchema, "tempUser");
+const MainPage = new mongoose.model("main-page", mainPageSchema, "main-page");
 
 try {
   mongoose.connect(url);
 } catch (e) {
   console.error(e);
-  console.log(2);
 }
 
 app.use(express.json());
@@ -56,11 +72,20 @@ app.get("/tasks", async (req, res) => {
           ? {
               priority: req.query.priority,
               readiness: +req.query.isReady === 1 ? true : false,
+              userId: new mongoose.Types.ObjectId(req.query.id),
             }
-          : { priority: req.query.priority }
+          : {
+              priority: req.query.priority,
+              userId: new mongoose.Types.ObjectId(req.query.id),
+            }
         : +req.query.isReady !== 0
-        ? { readiness: +req.query.isReady === 1 ? true : false }
-        : {};
+        ? {
+            readiness: +req.query.isReady === 1 ? true : false,
+            userId: new mongoose.Types.ObjectId(req.query.id),
+          }
+        : {
+            userId: new mongoose.Types.ObjectId(req.query.id),
+          };
     const result = await Task.find(field);
     return res.status(201).json(result);
   } catch (e) {
@@ -79,7 +104,6 @@ app.get("/tasks/:id", async (req, res) => {
 
 app.post("/tasks", async (req, res) => {
   const body = new Task(req.body);
-
   try {
     const newTask = await body.save();
     res.status(201).json(newTask);
@@ -133,8 +157,18 @@ app.get("/users/:username", async (req, res) => {
 });
 
 app.post("/users", async (req, res) => {
-  const body = new User(req.body);
-
+  const { firstName, lastName, email, username, password, pfp, isAdmin } =
+    req.body;
+  const salt = await bcrypt.genSalt(10);
+  const body = new User({
+    firstName,
+    lastName,
+    email,
+    username,
+    pfp,
+    isAdmin,
+    password: await bcrypt.hash(password, salt),
+  });
   try {
     const check = await User.find({ username: req.body.username });
     if (check.length === 0) {
@@ -149,17 +183,26 @@ app.post("/users", async (req, res) => {
 });
 
 app.put("/users/:id", async (req, res) => {
-  const newTask = {
-    name: req.body.name,
-    description: req.body.description,
-    readiness: req.body.readiness,
-    priority: req.body.priority,
-  };
   try {
-    const task = await Task.findByIdAndUpdate(req.params, newTask, {
-      new: true,
-    });
-    res.status(201).json(task);
+    const user = await User.findByIdAndUpdate(
+      req.params.id,
+      {
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        email: req.body.email,
+        username: req.body.username,
+        password: req.body.password,
+        pfp: req.body.pfp,
+        gender: req.body.gender,
+        country: req.body.country,
+        phone: req.body.phone,
+        age: req.body.age,
+      },
+      {
+        new: true,
+      }
+    );
+    res.status(201).json(user);
   } catch (e) {
     res.status(400).json({ message: e.message });
   }
@@ -187,14 +230,18 @@ app.put("/tempUser/:id", async (req, res) => {
   try {
     const user = await User.find({
       username: req.body.username,
-      password: req.body.password,
     });
-    if (user.length === 1) {
+    if (
+      user.length === 1 &&
+      (await bcrypt.compare(req.body.password, user[0].password))
+    ) {
       const result = await tempUser.findByIdAndUpdate(
         req.params.id,
         {
           username: req.body.username,
           loggedIn: true,
+          isAdmin: user[0].isAdmin,
+          userId: user[0]._id,
         },
         { new: true }
       );
@@ -204,6 +251,85 @@ app.put("/tempUser/:id", async (req, res) => {
     }
   } catch (e) {
     res.status(400).json({ message: "Something went wrong" });
+  }
+});
+
+app.put("/logoutTempUser/:id", async (req, res) => {
+  try {
+    const result = await tempUser.findOneAndUpdate(
+      { _id: new mongoose.Types.ObjectId(req.params.id) },
+      {
+        username: "",
+        loggedIn: false,
+        isAdmin: req.body.isAdmin,
+        userId: new mongoose.Types.ObjectId(),
+      },
+      { new: true }
+    );
+    res.status(201).json({ message: "You successfully log out", result });
+  } catch (e) {
+    res.status(400).json({ message: "Something went wrong" });
+  }
+});
+
+app.post("/sendEmail", async (req, res) => {
+  const { user, pass, to, subject, text, filename, content, service } =
+    req.body;
+  console.log(req.body);
+  const transporter = nodemailer.createTransport({
+    host: "smtp" + service,
+    secure: false,
+    port: 587,
+    auth: {
+      user,
+      pass,
+    },
+    tls: {
+      rejectUnauthorized: false,
+    },
+  });
+
+  const mailOptions = {
+    from: user,
+    to,
+    attachments: filename
+      ? [
+          {
+            filename,
+            content,
+          },
+        ]
+      : null,
+    subject,
+    text,
+  };
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      res.status(400).send({
+        message: "Something went wrong, check out inputs and try again!",
+      });
+    } else {
+      res.status(200).send({ message: info.response });
+    }
+  });
+});
+
+app.get("/main-page", async (req, res) => {
+  try {
+    const result = await MainPage.find();
+    return res.status(201).json(result);
+  } catch (e) {
+    return res.status(400).json({ message: "Error" });
+  }
+});
+
+app.post("/main-page", async (req, res) => {
+  const body = new MainPage(req.body);
+  try {
+    const newMainPageItem = await body.save();
+    res.status(201).json(newMainPageItem);
+  } catch (e) {
+    res.status(400).json({ message: e.message });
   }
 });
 

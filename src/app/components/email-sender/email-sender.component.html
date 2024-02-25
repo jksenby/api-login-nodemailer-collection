@@ -1,0 +1,43 @@
+<form id="mailForm" [formGroup]="emailForm" (ngSubmit)="sendEmail()">
+  <label class="form-label">Email</label>
+  <input
+    type="email"
+    formControlName="user"
+    class="form-control"
+    placeholder="example@gmail.com"
+    required
+  />
+  <label class="form-label">Password</label>
+  <input formControlName="pass" type="password" class="form-control" required />
+  <label class="form-label">Service</label>
+  <select formControlName="service" class="form-select">
+    <option selected value=".gmail.com">Gmail and Mail.ru</option>
+    <option value="-mail.outlook.com">Outlook</option>
+    <option value=".astanait.edu.kz">Outlook (AITU)</option>
+  </select>
+  <div style="border: 2px solid; padding: 50px; margin: 20px 0">
+    <label class="form-label">To</label>
+    <input
+      formControlName="to"
+      type="email"
+      placeholder="someone@gmail.com"
+      class="form-control"
+      required
+    />
+    <label class="form-label">Subject</label>
+    <input formControlName="subject" type="text" class="form-control" />
+    <label class="form-label">Text</label>
+    <textarea
+      formControlName="text"
+      class="form-label"
+      rows="3"
+      style="width: 100%"
+    ></textarea>
+    <input type="file" (change)="onFilePicked($event)" />
+  </div>
+  <div *ngIf="loading">
+    <i class="fa-solid fa-spinner fa-spin-pulse fa-xl"></i>
+  </div>
+  <p [style]="{ color: messageColor }">{{ message }}</p>
+  <button type="submit" class="btn btn-primary">Send</button>
+</form>

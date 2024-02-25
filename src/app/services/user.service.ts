@@ -25,6 +25,25 @@ export class UserService {
     );
   }
 
+  logoutTempUser(username, isAdmin): Observable<any> {
+    return this.http.put<Observable<any>>(
+      "http://localhost:3000/logoutTempUser/65d60450684da12832039223",
+      {
+        username,
+        isAdmin,
+      },
+      this.options
+    );
+  }
+
+  updateUser(body) {
+    return this.http.put(
+      "http://localhost:3000/users/" + body.id,
+      body,
+      this.options
+    );
+  }
+
   getTempUser() {
     return this.http.get("http://localhost:3000/tempUser");
   }

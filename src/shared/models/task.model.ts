@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { Priority } from "../enums/priority";
 
 export default interface ITask {

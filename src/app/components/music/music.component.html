@@ -1,0 +1,43 @@
+<form (submit)="onSubmit()">
+  <label class="form-label">Search in Genius API</label>
+  <input type="text" class="form-control" [(ngModel)]="searchInput" />
+  <div *ngIf="loading">
+    <i class="fa-solid fa-spinner fa-spin-pulse fa-xl"></i>
+  </div>
+  <button mat-flat-button color="primary" type="submit">
+    <mat-icon>search</mat-icon>Search
+  </button>
+</form>
+<ul class="list">
+  @if(result) {
+  <li *ngFor="let item of result">
+    <div>
+      <div class="card" style="width: 18rem">
+        <img
+          [src]="item.result.header_image_thumbnail_url"
+          class="card-img-top"
+          [alt]="item.result.id"
+        />
+        <div class="card-body">
+          <a [href]="item.result.url"
+            ><h4 class="card-title">{{ item.result.title }}</h4></a
+          >
+          <p class="card-text">
+            Release date:
+            {{
+              item.result.release_date_components &&
+                item.result.release_date_components.year +
+                  " " +
+                  item.result.release_date_components.month +
+                  " " +
+                  item.result.release_date_components.day
+            }}
+          </p>
+          <p>{{ item.result.artist_names }}</p>
+        </div>
+      </div>
+    </div>
+  </li>
+
+  }
+</ul>

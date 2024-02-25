@@ -18,8 +18,10 @@
             "styles": [
               "@angular/material/prebuilt-themes/indigo-pink.css",
               "src/styles.scss"
-            ]
+            ],
+            "assets": ["src/favicon.svg"]
           },
+
           "configurations": {
             "production": {
               "optimization": true,

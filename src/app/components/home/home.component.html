@@ -1,0 +1,113 @@
+<mat-slide-toggle [(ngModel)]="onRussian">Russian mode</mat-slide-toggle>
+<div class="container-fluid d-flex justify-content-center">
+  <div
+    id="carouselExampleCaptions"
+    class="carousel slide"
+    data-bs-ride="carousel"
+    style="width: 720px; height: 405px"
+    *ngIf="items"
+  >
+    <div class="carousel-indicators">
+      <button
+        type="button"
+        data-bs-target="#carouselExampleCaptions"
+        data-bs-slide-to="0"
+        class="active"
+        aria-current="true"
+        aria-label="Slide 1"
+      ></button>
+      @for(item of items; track item; let i = $index) {
+      <button
+        *ngIf="i !== 0"
+        type="button"
+        data-bs-target="#carouselExampleCaptions"
+        attr.data-bs-slide-to="{{ i }}"
+        attr.aria-label="{{ 'Slide ' + (i + 1) }}"
+      ></button>
+      }
+    </div>
+    <div class="carousel-inner">
+      <div class="carousel-item active">
+        <img
+          [src]="items[0].image"
+          class="d-block w-100"
+          [alt]="items[0].name"
+        />
+        <div class="carousel-caption d-none d-md-block captiona">
+          <h5>{{ onRussian ? items[0].nameOnRussian : items[0].name }}</h5>
+          <p>
+            {{
+              onRussian ? items[0].descriptionOnRussian : items[0].description
+            }}
+          </p>
+          <p>{{ items[0].created | date : "dd.MM.yyyy hh:mm" }}</p>
+        </div>
+      </div>
+      @for(item of items; track item; let i = $index) {
+      <div *ngIf="i !== 0" class="carousel-item">
+        <img [src]="item.image" class="d-block w-100" [alt]="item.name" />
+        <div class="carousel-caption d-none d-md-block captiona">
+          <h5>{{ onRussian ? item.nameOnRussian : item.name }}</h5>
+          <p>{{ onRussian ? item.descriptionOnRussian : item.description }}</p>
+          <p>{{ item.created | date : "dd.MM.yyyy hh:mm" }}</p>
+        </div>
+      </div>
+      }
+    </div>
+    <button
+      class="carousel-control-prev"
+      type="button"
+      data-bs-target="#carouselExampleCaptions"
+      data-bs-slide="prev"
+    >
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Previous</span>
+    </button>
+    <button
+      class="carousel-control-next"
+      type="button"
+      data-bs-target="#carouselExampleCaptions"
+      data-bs-slide="next"
+    >
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Next</span>
+    </button>
+  </div>
+  <form
+    *ngIf="isAdmin"
+    [formGroup]="newItemForm"
+    (ngSubmit)="onSubmit()"
+    style="
+      display: flex;
+      flex-direction: column;
+      width: 30%;
+      justify-content: center;
+      margin: 50px;
+    "
+  >
+    <mat-form-field appearance="fill">
+      <mat-label>Name</mat-label>
+      <input matInput formControlName="name" />
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>Name on Russian</mat-label>
+      <input matInput formControlName="nameOnRussian" />
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>Description</mat-label>
+      <textarea matInput formControlName="description"></textarea>
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>Description on Russian</mat-label>
+      <textarea matInput formControlName="descriptionOnRussian"></textarea>
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>URL of image</mat-label>
+      <input matInput formControlName="image" />
+    </mat-form-field>
+    <button mat-flat-button type="submit" color="primary">Add new item</button>
+    <div *ngIf="loading">
+      <i class="fa-solid fa-spinner fa-spin-pulse fa-xl"></i>
+    </div>
+  </form>
+</div>

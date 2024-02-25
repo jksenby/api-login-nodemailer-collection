@@ -8,6 +8,8 @@ import { MatTableDataSource } from "@angular/material/table";
 import { MatPaginator } from "@angular/material/paginator";
 
 import { DomSanitizer } from "@angular/platform-browser";
+import mongoose from "mongoose";
+import { UserService } from "src/app/services/user.service";
 
 @Component({
   selector: "app-todolist",
@@ -31,10 +33,6 @@ export class TodolistComponent implements OnInit, AfterViewInit {
   @ViewChild("paginator") paginator: MatPaginator;
   priority = Priority;
 
-  taskName: string;
-  taskPriority: Priority;
-  taskDescription: string;
-
   isReady: number = 0;
   priorityTask: number = 0;
 
@@ -49,9 +47,12 @@ export class TodolistComponent implements OnInit, AfterViewInit {
 
   fileUrl;
 
+  user;
+
   constructor(
     private taskService: TaskService,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private userService: UserService
   ) {}
 
   ngOnInit(): void {
@@ -69,15 +70,19 @@ export class TodolistComponent implements OnInit, AfterViewInit {
   }
 
   getTasks() {
-    this.taskService.getTasks(this.priorityTask, this.isReady).subscribe({
-      next: (task: ITask[]) => {
-        this.task = task;
-        this.totalDataLength = this.task.length;
-        this.dataSource = new MatTableDataSource(this.task);
-      },
-      error: (e) => {
-        alert(e.message);
-      },
+    this.userService.getTempUser().subscribe((user) => {
+      this.taskService
+        .getTasks(this.priorityTask, this.isReady, user[0].userId)
+        .subscribe({
+          next: (task: ITask[]) => {
+            this.task = task;
+            this.totalDataLength = this.task.length;
+            this.dataSource = new MatTableDataSource(this.task);
+          },
+          error: (e) => {
+            alert(e.message);
+          },
+        });
     });
   }
 
@@ -104,26 +109,27 @@ export class TodolistComponent implements OnInit, AfterViewInit {
 
   createTask() {
     if (this.createFormGroup.invalid) return;
-
-    const task: ITask = {
-      name: this.taskName,
-      created: new Date(),
-      readiness: false,
-      description: this.taskDescription,
-      priority: this.taskPriority,
-    };
-
-    return this.taskService.createTask(task).subscribe({
-      next: () => {
-        this.serverMessage.message = "The task has created";
-        this.serverMessage.class = "green";
-        setTimeout(() => (this.serverMessage.message = null), 8000);
-        this.getTasks();
-      },
-      error: (e: any) => {
-        this.serverMessage.message = e.message;
-        this.serverMessage.class = "red";
-      },
+    this.userService.getTempUser().subscribe((user) => {
+      const task = {
+        name: this.createFormGroup.controls.nameFormControl.value,
+        created: new Date(),
+        readiness: false,
+        description: this.createFormGroup.controls.descriptionFormControl.value,
+        priority: this.createFormGroup.controls.priorityFormControl.value,
+        userId: user[0].userId,
+      };
+      return this.taskService.createTask(task).subscribe({
+        next: () => {
+          this.serverMessage.message = "The task has created";
+          this.serverMessage.class = "green";
+          setTimeout(() => (this.serverMessage.message = null), 8000);
+          this.getTasks();
+        },
+        error: (e: any) => {
+          this.serverMessage.message = e.message;
+          this.serverMessage.class = "red";
+        },
+      });
     });
   }
 

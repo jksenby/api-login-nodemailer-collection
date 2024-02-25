@@ -145,7 +145,6 @@
             formControlName="nameFormControl"
             matInput
             placeholder="Do 10 push-ups"
-            [(ngModel)]="taskName"
           />
           <mat-error
             *ngIf="createFormGroup.controls['nameFormControl'].invalid"
@@ -157,11 +156,7 @@
       <div class="mb-3">
         <mat-form-field>
           <mat-label>Priority</mat-label>
-          <mat-select
-            formControlName="priorityFormControl"
-            [(ngModel)]="taskPriority"
-            name="priority"
-          >
+          <mat-select formControlName="priorityFormControl" name="priority">
             <mat-option [value]="1"> Low </mat-option>
             <mat-option [value]="2"> Medium </mat-option>
             <mat-option [value]="3"> High </mat-option>
@@ -181,7 +176,6 @@
             placeholder="I need to do that it at..."
             rows="3"
             formControlName="descriptionFormControl   "
-            [(ngModel)]="taskDescription"
           ></textarea>
         </mat-form-field>
       </div>

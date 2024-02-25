@@ -1,0 +1,47 @@
+<form (submit)="onSubmit()">
+  <mat-form-field style="width: 100%">
+    <mat-label>Category</mat-label>
+    <mat-select [(ngModel)]="category">
+      <mat-option value="onSale">On Sale Games</mat-option>
+      <mat-option value="comingSoon">Coming Soon Games</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field style="width: 100%">
+    <mat-label>Name of the game</mat-label>
+    <input matInput type="text" [(ngModel)]="searchInput" />
+  </mat-form-field>
+  <div *ngIf="loading">
+    <i class="fa-solid fa-spinner fa-spin-pulse fa-xl"></i>
+  </div>
+  <button mat-flat-button color="primary" type="submit">
+    <mat-icon>search</mat-icon>Search
+  </button>
+</form>
+<ul class="list">
+  @if(result) {
+  <li *ngFor="let item of result">
+    <div>
+      <div class="card" style="width: 18rem; height: 45em">
+        <img
+          [src]="item.keyImages[0].url"
+          class="card-img-top"
+          [alt]="item.id"
+        />
+        <div class="card-body">
+          <a [href]="item.url"
+            ><h4 class="card-title">{{ item.title }}</h4></a
+          >
+          <p class="card-text">
+            {{ item.description }}
+          </p>
+          <p>{{ item.publisherName }}</p>
+          <button class="btn btn-primary">
+            ${{ item.price.totalPrice.originalPrice }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </li>
+
+  }
+</ul>

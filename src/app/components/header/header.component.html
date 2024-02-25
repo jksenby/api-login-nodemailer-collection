@@ -32,12 +32,37 @@
         >
       </li>
       <li>
+        <a routerLink="/email-sender" class="nav-link px-2 link-secondary"
+          >Email Sender</a
+        >
+      </li>
+      <li>
+        <button routerLink="/music" matTooltip="music" mat-icon-button>
+          <mat-icon>library_music</mat-icon>
+        </button>
+      </li>
+      <li>
+        <button routerLink="/games" matTooltip="games" mat-icon-button>
+          <mat-icon>videogame_asset</mat-icon>
+        </button>
+      </li>
+      <li>
+        <button routerLink="/movies" matTooltip="movie" mat-icon-button>
+          <mat-icon>movie</mat-icon>
+        </button>
+      </li>
+      <li>
         <button
           [routerLink]="signed.route"
-          matTooltip="Sign in"
+          [matTooltip]="signed.toolkip"
           mat-icon-button
         >
           <mat-icon>{{ signed.icon }}</mat-icon>
+        </button>
+      </li>
+      <li>
+        <button routerLink="/main-page" matTooltip="Main Page" mat-icon-button>
+          <mat-icon>home</mat-icon>
         </button>
       </li>
     </ul>

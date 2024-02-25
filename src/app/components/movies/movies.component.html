@@ -1,0 +1,43 @@
+<form (submit)="onSubmit()">
+  <mat-form-field style="width: 100%">
+    <mat-label>Title of the movie</mat-label>
+    <input matInput type="text" [(ngModel)]="searchInput" />
+  </mat-form-field>
+  <div *ngIf="loading">
+    <i class="fa-solid fa-spinner fa-spin-pulse fa-xl"></i>
+  </div>
+  <button mat-flat-button color="primary" type="submit">
+    <mat-icon>search</mat-icon>Search
+  </button>
+</form>
+<ul class="list">
+  @if(result) {
+  <li *ngFor="let item of result">
+    <div>
+      <div class="card" style="width: 18rem; height: 50em">
+        <img [src]="item.backdrop_path" class="card-img-top" [alt]="item._id" />
+        <div class="card-body">
+          <a [href]="item.youtube_trailer"
+            ><h4 class="card-title">{{ item.title }}</h4></a
+          >
+          <div style="display: flex">
+            <h3>{{ item.vote_average }}/10</h3>
+            <button mat-mini-fab color="accent">
+              <mat-icon>star</mat-icon>
+            </button>
+          </div>
+
+          <p class="card-text">
+            {{ item.overview }}
+          </p>
+          <p>{{ item.publisherName }}</p>
+          <button class="btn btn-primary" *ngFor="let genre of item.genres">
+            {{ genre }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </li>
+
+  }
+</ul>
