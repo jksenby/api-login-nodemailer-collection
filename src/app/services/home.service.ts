@@ -21,4 +21,16 @@ export class HomeService {
   getAllItems(): Observable<any> {
     return this.http.get("http://localhost:3000/main-page");
   }
+
+  deleteItem(id) {
+    return this.http.delete("http://localhost:3000/main-page/" + id);
+  }
+
+  putItem(item) {
+    return this.http.put(
+      "http://localhost:3000/main-page/" + item._id,
+      item,
+      this.options
+    );
+  }
 }

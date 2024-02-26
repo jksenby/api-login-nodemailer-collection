@@ -1,0 +1,29 @@
+<h2 mat-dialog-title>Edit profile</h2>
+<mat-dialog-content class="mat-typography">
+  <form [formGroup]="editForm" (ngSubmit)="onSubmit()">
+    <mat-form-field style="width: 100%">
+      <mat-label>Name</mat-label>
+      <input matInput formControlName="name" />
+    </mat-form-field>
+    <mat-form-field style="width: 100%">
+      <mat-label>Name on Russian</mat-label>
+      <input matInput formControlName="nameOnRussian" />
+    </mat-form-field>
+    <mat-form-field style="width: 100%">
+      <mat-label>Description</mat-label>
+      <input matInput formControlName="description" />
+    </mat-form-field>
+    <mat-form-field style="width: 100%">
+      <mat-label>Description on Russian</mat-label>
+      <input matInput formControlName="descriptionOnRussian" />
+    </mat-form-field>
+    <mat-form-field style="width: 100%">
+      <mat-label>URL</mat-label>
+      <input matInput formControlName="image" />
+    </mat-form-field>
+    <mat-dialog-actions align="end">
+      <button mat-button mat-dialog-close>Cancel</button>
+      <button mat-button type="submit" cdkFocusInitial>Edit</button>
+    </mat-dialog-actions>
+  </form>
+</mat-dialog-content>

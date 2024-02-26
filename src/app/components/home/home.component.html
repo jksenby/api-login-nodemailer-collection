@@ -33,6 +33,43 @@
           class="d-block w-100"
           [alt]="items[0].name"
         />
+        <button
+          *ngIf="isAdmin"
+          (click)="deleteItem(items[0]['_id'])"
+          style="
+            border: 2px solid;
+            background-color: #fff;
+            position: absolute;
+            top: 0px;
+            right: 50%;
+            height: 46.5px;
+            width: 46.5px;
+          "
+        >
+          <i
+            [id]="'trash' + items[0]['_id']"
+            class="fa-solid fa-trash fa-2xl"
+            style="color: #ff0000"
+          ></i>
+        </button>
+        <button
+          *ngIf="isAdmin"
+          (click)="putItem(items[0])"
+          style="
+            border: 2px solid;
+            background-color: #fff;
+            position: absolute;
+            top: 0px;
+            right: 43.7%;
+            height: 46.5px;
+            width: 46.5px;
+          "
+        >
+          <i
+            [id]="'edit' + items[0]['_id']"
+            class="fa-solid fa-pen-to-square fa-2xl"
+          ></i>
+        </button>
         <div class="carousel-caption d-none d-md-block captiona">
           <h5>{{ onRussian ? items[0].nameOnRussian : items[0].name }}</h5>
           <p>
@@ -46,6 +83,43 @@
       @for(item of items; track item; let i = $index) {
       <div *ngIf="i !== 0" class="carousel-item">
         <img [src]="item.image" class="d-block w-100" [alt]="item.name" />
+        <button
+          *ngIf="isAdmin"
+          (click)="deleteItem(item['_id'])"
+          style="
+            border: 2px solid;
+            background-color: #fff;
+            position: absolute;
+            top: 0px;
+            right: 50%;
+            height: 46.5px;
+            width: 46.5px;
+          "
+        >
+          <i
+            [id]="'trash' + item['_id']"
+            class="fa-solid fa-trash fa-2xl"
+            style="color: #ff0000; margin: 5px"
+          ></i>
+        </button>
+        <button
+          *ngIf="isAdmin"
+          (click)="putItem(item)"
+          style="
+            border: 2px solid;
+            background-color: #fff;
+            position: absolute;
+            top: 0px;
+            right: 43.7%;
+            height: 46.5px;
+            width: 46.5px;
+          "
+        >
+          <i
+            [id]="'edit' + item['_id']"
+            class="fa-solid fa-pen-to-square fa-2xl"
+          ></i>
+        </button>
         <div class="carousel-caption d-none d-md-block captiona">
           <h5>{{ onRussian ? item.nameOnRussian : item.name }}</h5>
           <p>{{ onRussian ? item.descriptionOnRussian : item.description }}</p>

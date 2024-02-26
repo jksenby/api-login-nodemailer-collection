@@ -41,6 +41,7 @@ import { HomeComponent } from "src/app/components/home/home.component";
 import { MusicComponent } from "src/app/components/music/music.component";
 import { GamesComponent } from "src/app/components/games/games.component";
 import { MoviesComponent } from "./components/movies/movies.component";
+import { ItemDialogComponent } from "src/app/components/item-dialog/item-dialog.component";
 
 import { TaskService } from "src/app/services/task.service";
 import { CityWeatherService } from "src/app/services/city.service";
@@ -104,6 +105,7 @@ const mapConfig: YaConfig = {
     MusicComponent,
     GamesComponent,
     MoviesComponent,
+    ItemDialogComponent,
   ],
   bootstrap: [AppComponent],
   providers: [

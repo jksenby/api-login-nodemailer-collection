@@ -40,6 +40,7 @@ const tempUserSchema = mongoose.Schema({
   loggedIn: Boolean,
   isAdmin: Boolean,
   userId: mongoose.Schema.Types.ObjectId,
+  email: String,
 });
 
 const mainPageSchema = mongoose.Schema({
@@ -242,6 +243,7 @@ app.put("/tempUser/:id", async (req, res) => {
           loggedIn: true,
           isAdmin: user[0].isAdmin,
           userId: user[0]._id,
+          email: user[0].email,
         },
         { new: true }
       );
@@ -307,6 +309,7 @@ app.post("/sendEmail", async (req, res) => {
     if (error) {
       res.status(400).send({
         message: "Something went wrong, check out inputs and try again!",
+        error,
       });
     } else {
       res.status(200).send({ message: info.response });
@@ -328,6 +331,26 @@ app.post("/main-page", async (req, res) => {
   try {
     const newMainPageItem = await body.save();
     res.status(201).json(newMainPageItem);
+  } catch (e) {
+    res.status(400).json({ message: e.message });
+  }
+});
+
+app.delete("/main-page/:id", async (req, res) => {
+  try {
+    const home = await MainPage.findByIdAndDelete(req.params.id);
+    res.status(201).json(home);
+  } catch (e) {
+    res.status(400).json({ message: e.message });
+  }
+});
+
+app.put("/main-page/:id", async (req, res) => {
+  try {
+    const home = await MainPage.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    });
+    res.status(201).json(home);
   } catch (e) {
     res.status(400).json({ message: e.message });
   }

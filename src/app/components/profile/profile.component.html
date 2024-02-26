@@ -28,8 +28,13 @@
           </ul>
         </div>
       </div>
-      <div class="col-md-2" *ngIf="user.isAdmin">
-        <button mat-button (click)="openDialog()" class="profile-edit-btn">
+      <div class="col-md-2">
+        <button
+          mat-button
+          (click)="openDialog()"
+          class="profile-edit-btn"
+          *ngIf="user.isAdmin"
+        >
           Edit Profile
         </button>
         <button mat-button (click)="logout()">

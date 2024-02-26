@@ -1,7 +1,9 @@
 import { Component, OnInit } from "@angular/core";
 import { FormControl, FormGroup } from "@angular/forms";
+import { MatDialog } from "@angular/material/dialog";
 import { HomeService } from "src/app/services/home.service";
 import { UserService } from "src/app/services/user.service";
+import { ItemDialogComponent } from "../item-dialog/item-dialog.component";
 
 @Component({
   selector: "app-home",
@@ -11,7 +13,8 @@ import { UserService } from "src/app/services/user.service";
 export class HomeComponent implements OnInit {
   constructor(
     private userService: UserService,
-    private homeService: HomeService
+    private homeService: HomeService,
+    public dialog: MatDialog
   ) {}
   newItemForm: FormGroup;
   isAdmin: boolean = false;
@@ -52,6 +55,31 @@ export class HomeComponent implements OnInit {
         this.loading = false;
         alert(res.error.message);
       },
+    });
+  }
+  deleteItem(id) {
+    this.homeService.deleteItem(id).subscribe(() => {
+      this.getAllItems();
+    });
+  }
+  putItem(item) {
+    const dialogRef = this.dialog.open(ItemDialogComponent, {
+      data: item,
+      hasBackdrop: false,
+    });
+    dialogRef.afterClosed().subscribe((result) => {
+      const body = {
+        image: result.image,
+        name: result.image,
+        nameOnRussian: result.nameOnRussian,
+        description: result.description,
+        descriptionOnRussian: result.descriptionOnRussian,
+        created: item.created,
+        _id: item._id,
+      };
+      this.homeService.putItem(body).subscribe(() => {
+        window.location.reload();
+      });
     });
   }
 }

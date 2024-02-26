@@ -10,6 +10,7 @@ import { MatPaginator } from "@angular/material/paginator";
 import { DomSanitizer } from "@angular/platform-browser";
 import mongoose from "mongoose";
 import { UserService } from "src/app/services/user.service";
+import { EmailService } from "src/app/services/email.service";
 
 @Component({
   selector: "app-todolist",
@@ -52,7 +53,8 @@ export class TodolistComponent implements OnInit, AfterViewInit {
   constructor(
     private taskService: TaskService,
     private sanitizer: DomSanitizer,
-    private userService: UserService
+    private userService: UserService,
+    private emailService: EmailService
   ) {}
 
   ngOnInit(): void {
@@ -124,6 +126,18 @@ export class TodolistComponent implements OnInit, AfterViewInit {
           this.serverMessage.class = "green";
           setTimeout(() => (this.serverMessage.message = null), 8000);
           this.getTasks();
+          this.emailService
+            .sendEmail({
+              user: "zhalgas.karsenbai@gmail.com",
+              pass: "hbqd buof bqjo owft",
+              to: user[0].email,
+              subject: "You have new task. Priority: " + task.priority,
+              text: `${task.name + ""}\n${task.description + ""}`,
+              filename: null,
+              content: null,
+              service: ".gmail.com",
+            })
+            .subscribe();
         },
         error: (e: any) => {
           this.serverMessage.message = e.message;
