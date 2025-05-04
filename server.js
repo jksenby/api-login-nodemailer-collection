@@ -10,7 +10,7 @@ const port = 3000;
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-const url = "mongodb://localhost:27017/superapp_db";
+const url = "mongodb://root:password@db:27017/superapp_db?authSource=admin";
 
 const taskSchema = mongoose.Schema({
   name: String,
