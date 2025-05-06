@@ -19,3 +19,14 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: password
     ports:
       - "27017:27017"
+  redis:
+    image: redis:latest
+    restart: always
+    ports:
+      - '6379:6379'
+    command: redis-server --save 20 1 --requirepass ${REDIS_PASSWORD}
+    volumes:
+      - cache:/data
+volumes:
+  cache:
+    driver: local

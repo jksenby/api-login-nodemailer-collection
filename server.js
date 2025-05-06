@@ -5,6 +5,7 @@ const bodyParser = require("body-parser");
 const nodemailer = require("nodemailer");
 const cors = require("cors");
 const bcrypt = require("bcrypt");
+const redisClient = require("./redis");
 const port = 3000;
 
 app.use(cors());
@@ -67,6 +68,10 @@ app.use(express.json());
 
 app.get("/tasks", async (req, res) => {
   try {
+    const userId = req.query.id;
+    const priority = +req.query.priority;
+    const isReady = +req.query.isReady;
+
     const field =
       +req.query.priority !== 0
         ? +req.query.isReady !== 0
@@ -87,16 +92,34 @@ app.get("/tasks", async (req, res) => {
         : {
             userId: new mongoose.Types.ObjectId(req.query.id),
           };
-    const result = await Task.find(field);
+
+    const cacheKey = `tasks:${userId}:${priority}:${isReady}`;
+
+    const cached = await redisClient.get(cacheKey);
+
+    if (cached) return res.status(200).json(JSON.parse(cached));
+    const result = await Task.find(field).lean();
+
+    await redisClient.setEx(cacheKey, 60, JSON.stringify(result))
+
     return res.status(201).json(result);
   } catch (e) {
-    console.log(e);
+    console.error(e);
   }
 });
 
 app.get("/tasks/:id", async (req, res) => {
   try {
+
+    const cacheKey = `tasks:${req.params.id}`;
+    const cached = await redisClient.get(cacheKey);
+
+    if(cached) return res.status(200).json(JSON.parse(cached));
+
     const result = await Task.find({ _id: req.params.id });
+
+    await redisClient.setEx(cacheKey, 60, JSON.stringify(result))
+
     res.status(201).json(result);
   } catch (e) {
     res.status(400).json({ message: e.message });
@@ -141,7 +164,14 @@ app.put("/tasks", async (req, res) => {
 
 app.get("/users", async (req, res) => {
   try {
+    const cacheKey = `users`;
+    const cached = await redisClient.get(cacheKey);
+
+    if(cached) return res.status(200).json(JSON.parse(cached));
+
     const result = await Task.find();
+
+    await redisClient.setEx(cacheKey, 60, JSON.stringify(result))
     return res.status(201).json(result);
   } catch (e) {
     return res.status(400).json({ message: "Error" });
@@ -150,7 +180,13 @@ app.get("/users", async (req, res) => {
 
 app.get("/users/:username", async (req, res) => {
   try {
+    const cacheKey = `users:${req.params.username}`;
+    const cached = await redisClient.get(cacheKey);
+
+    if(cached) return res.status(200).json(JSON.parse(cached));
+
     const result = await User.find({ username: req.params.username });
+    await redisClient.setEx(cacheKey, 60, JSON.stringify(result))
     return res.status(201).json(result);
   } catch (e) {
     return res.status(400).json({ message: "Error" });
@@ -319,7 +355,15 @@ app.post("/sendEmail", async (req, res) => {
 
 app.get("/main-page", async (req, res) => {
   try {
+    const cacheKey = `main-page`;
+    const cached = await redisClient.get(cacheKey);
+
+    if(cached) return res.status(200).json(JSON.parse(cached));
+    
     const result = await MainPage.find();
+
+    await redisClient.setEx(cacheKey, 60, result);
+
     return res.status(201).json(result);
   } catch (e) {
     return res.status(400).json({ message: "Error" });
